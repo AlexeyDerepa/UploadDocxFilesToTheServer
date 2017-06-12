@@ -1,0 +1,105 @@
+﻿@{
+    ViewBag.Title = "UploadFiles";
+}
+
+<h2>Upload your files</h2>
+
+
+        <div>
+            <input type="file" required multiple name="upload" id="uploadFile" /><br />
+            <button id="submit" class="btn btn-default">Загрузить</button>
+        </div>
+    <div id="block1">
+        <h3>Uploaded *.doc/*.docx files</h3>
+        <ul id="list"></ul>
+    </div>
+    <div id="block2">
+        <h3>List of  damaged files</h3>
+        <ul id="list2"></ul>
+    </div>
+    <div id="block3">
+        <h3>List of illegal files</h3>
+        <ul id="list3"></ul>
+    </div>
+
+
+    @section scripts{
+        <script type="text/javascript">
+
+            var initial = function () {
+                document.getElementById('block1').style.display = "none";
+                document.getElementById('block2').style.display = "none";
+                document.getElementById('block3').style.display = "none";
+            }
+            initial();
+            $('#submit').on('click', function (e) {
+                e.preventDefault();
+                initial();
+                var files = document.getElementById('uploadFile').files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        var data = new FormData();
+                        for (var x = 0; x < files.length; x++) {
+                            data.append("file" + x, files[x]);
+                        }
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("Upload", "Home")',
+                            contentType: false,
+                            processData: false,
+                            data: data,
+                            success: function (result) {
+                                FillOutUL(result);
+                            },
+                            error: function (xhr, status, p3) {
+                                alert(xhr.responseText);
+                            }
+                        });
+                    } else {
+                        alert("Браузер не поддерживает загрузку файлов HTML5!");
+                    }
+                }
+
+                var FillOutUL = function (result) {
+                    var ul = document.getElementById('list');
+                    var data = "";
+                    for (var i = 0; i < result.listUploadFiles.length; i++) {
+                        data += "<li><a href='/Home/GetFile/" + result.listUploadFiles[i][0] + "'>" + result.listUploadFiles[i][1] + "</a></li>";
+                    }
+                    ul.innerHTML = data;
+
+                    var ul2 = document.getElementById('list2');
+                    data = "";
+                    for (var i = 0; i < result.listOfDamagedFiles.length; i++) {
+                        data += "<li><a href='#'>" + result.listOfDamagedFiles[i] + "</a></li>";
+                    }
+                    ul2.innerHTML = data;
+
+                    var ul3 = document.getElementById('list3');
+                    data = "";
+                    for (var i = 0; i < result.listOfIllegalFiles.length; i++) {
+                        data += "<li><a href='#'>" + result.listOfIllegalFiles[i] + "</a></li>";
+                    }
+                    ul3.innerHTML = data;
+                    if (result.listUploadFiles.length>0) {
+                        document.getElementById('block1').style.display = "block";
+                    }
+                    if (result.listOfDamagedFiles.length>0) {
+                        document.getElementById('block2').style.display = "block";
+                    }
+                    if (result.listOfIllegalFiles.length>0) {
+                        document.getElementById('block3').style.display = "block";
+                    }
+                    
+
+                }
+
+            });
+
+
+
+
+
+        </script>
+    }

@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Statistics";
+}
+
+<h2>Statistics</h2>
+<script src="~/Scripts/Controllers/ui-bootstrap-tpls-1.3.2.js"></script>
+
+<div ng-app="MyStatistic">
+    <div ng-controller="MainCtrl">
+
+
+        <div style="margin-left:auto; margin-right:auto; text-align:center"><h1>Uploaded files and them owners</h1></div>
+
+        <hr />
+        <div>Total count: {{totalItems}}</div>
+        <table id="mytable" class="table table-striped">
+            <thead>
+                <tr class="table-head">
+                    <th>ID</th>
+                    <th>File Name</th>
+                    <th>Uploader</th>
+                    <th>Creator</th>
+                    <th>Revision</th>
+                    <th>Time of Create</th>
+                    <th>Time of Modify</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in aCandidates">
+                    <th>
+                        <div>
+                            {{item.Id}}
+                        </div>
+                    </th>
+                    <th>
+                        <div>
+                            <a href="GetFile/{{item.Id}}">{{item.FileName}}</a>
+                        </div>
+                    </th>
+                    <th>
+                        <div>
+                            {{item.WhoDidFileUpload}}
+                        </div>
+                    </th>
+                    <th>
+                        <div>
+                            {{item.CoreCreator}}
+                        </div>
+                    </th>
+                    <th>
+                        <div>
+                            {{item.CoreRevision}}
+                        </div>
+                    </th>
+                    <th>
+                        <div>
+                            {{item.CoreCreated}}
+                        </div>
+                    </th>
+                    <th>
+                        <div>
+                            {{item.CoreModified}}
+                        </div>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+
+   
+    
+    
+        <div style=" margin-left: auto; margin-right: auto;width : 550px; ">
+            <uib-pagination total-items="totalItems" ng-model="currentPage" items-per-page="itemsPerPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true" rotate="true"></uib-pagination>
+
+        </div>
+
+    
+    
+     </div>
+</div>
+<script src="~/Scripts/Controllers/StatisticsController.js"></script>
